@@ -4,9 +4,6 @@ const router = express.Router(); // toutes les url de ce fichiers commencent par
 
 // GET ALL 
 router.get('/', async (req, res) => {
-    // il recoit la requete du client 
-    // il doit traiter cette demande en demandant 
-    // lui meme à un model de lui retourner tous les projets
     try {
         const projects = await Projects.findAll()
         res.send(projects)
@@ -48,14 +45,28 @@ router.post('/', async (req, res) => {
     ];
     try {
         const project = await Projects.create(newProject)
+        res.send(project)
     } catch (error) {
         res.status(500).send('Error server, try again !')
     }
-}) 
+}); 
 
 // UPDATE
-router.put('/:id', (req, res) => {
-    console.log('ici la route update')
-}) 
+router.put('/:id', async (req, res) => {
+    const id = Number(req.params.id);
+    const updateProject = [
+        String(req.body.title),
+        String(req.body.content),
+        String(req.body.created_at),
+        String(req.body.illustration),
+        id
+    ];
+    try {
+        const project = await Projects.update(updateProject, id)
+        res.send(project)
+    } catch (error) {
+        res.status(500).send('Error server, try again !')
+    }
+});
 
 export default router;

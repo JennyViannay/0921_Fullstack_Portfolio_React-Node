@@ -36,12 +36,28 @@ const create = (project) => {
         connect.query("INSERT INTO project (title, content, created_at, illustration) VALUES (?, ?, ?, ?)", project, (err, result) => {
             if (err) reject(err)
             else {
-                connect.query("SELECT * FROM project WHERE id = ?", result.insertId, (err, result) => {
-                    resolve(result)
+                connect.query("SELECT * FROM project WHERE id = ?", result.insertId, (err, res) => {
+                    if (err) reject(err)
+                    else resolve(res)
                 })
             }
         })
     })
 }
 
-export default { findAll, findOneById, deleteOneById, create }
+// UPDATE
+const update = (project, id) => {
+    return new Promise((resolve, reject) => {
+        connect.query("UPDATE project SET title = ?, content = ?, created_at = ?, illustration = ? WHERE id = ?", project, (err, result) => {
+            if (err) reject(err)
+            else {
+                connect.query("SELECT * FROM project WHERE id = ?", id, (er, res) => {
+                    if (er) reject(er)
+                    else resolve(res)
+                })
+            }
+        })
+    })
+}
+
+export default { findAll, findOneById, deleteOneById, create, update }
