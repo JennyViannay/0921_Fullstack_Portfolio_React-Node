@@ -1,11 +1,13 @@
 import express from "express";
-import Projects from '../../models/projectsModel.js';
-const router = express.Router(); // toutes les url de ce fichiers commencent par /projects
+import Projects from '../models/projectsModel.js';
+const router = express.Router(); // toutes les url de ce fichier commencent par /projects
 
 // GET ALL 
 router.get('/', async (req, res) => {
     try {
         const projects = await Projects.findAll()
+        res.header('Access-Control-Expose-Headers', 'X-Total-Count')
+        res.set('X-Total-Count', projects.length) 
         res.send(projects)
     } catch (error) {
         res.status(500).send('Error server, try again !')
@@ -42,6 +44,7 @@ router.post('/', async (req, res) => {
         String(req.body.content),
         String(req.body.created_at),
         String(req.body.illustration),
+        Number(req.body.category_id)
     ];
     try {
         const project = await Projects.create(newProject)
@@ -59,6 +62,7 @@ router.put('/:id', async (req, res) => {
         String(req.body.content),
         String(req.body.created_at),
         String(req.body.illustration),
+        Number(req.body.category_id),
         id
     ];
     try {
